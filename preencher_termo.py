@@ -87,9 +87,9 @@ class TermoEntregaApp:
         ttk.Entry(header_frame, textvariable=self.motivo_var).grid(row=3, column=1, sticky="ew", pady=2)
         # Datas
         ttk.Label(header_frame, text="Data de Saída:").grid(row=4, column=0, sticky="e", pady=2)
-        DateEntry(header_frame, textvariable=self.data_saida_var, date_pattern='yyyy-MM-dd').grid(row=4, column=1, sticky="w", pady=2)
+        DateEntry(header_frame, textvariable=self.data_saida_var, date_pattern='dd-MM-yyyy').grid(row=4, column=1, sticky="w", pady=2)
         ttk.Label(header_frame, text="Data de Retorno:").grid(row=5, column=0, sticky="e", pady=2)
-        DateEntry(header_frame, textvariable=self.data_retorno_var, date_pattern='yyyy-MM-dd').grid(row=5, column=1, sticky="w", pady=2)
+        DateEntry(header_frame, textvariable=self.data_retorno_var, date_pattern='dd-MM-yyyy').grid(row=5, column=1, sticky="w", pady=2)
 
         # Responsável com Combobox para Setor e Cargo
         responsavel_frame = ttk.LabelFrame(main_frame, text="Responsável", padding=10)
@@ -230,14 +230,14 @@ class TermoEntregaApp:
                 linha += 1
             
             # Data atual para as assinaturas
-            data_atual = datetime.now().strftime("%d-%m-%Y")
+            data_atual = datetime.now().strftime("%Y-%m-%d")
             ws['A32'] = f"DATA: {data_atual}"
             ws['C32'] = f"DATA: {data_atual}"
             ws['D32'] = f"DATA: {data_atual}"
             ws['F32'] = f"DATA: {data_atual}"
             
             # Salva o arquivo com um novo nome
-            nome_arquivo = f"Termo_{self.nome_var.get()}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.xlsx"
+            nome_arquivo = f"Termo_{self.nome_var.get()}_{datetime.now().strftime('%d%m%Y_%H%M%S')}.xlsx"
             wb.save(nome_arquivo)
             
             messagebox.showinfo("Sucesso", f"Termo preenchido e salvo como:\n{nome_arquivo}")
