@@ -3,7 +3,7 @@ from tkinter import ttk, messagebox
 from tkcalendar import DateEntry  
 from openpyxl import load_workbook
 from datetime import datetime
-import os
+import os, sys, subprocess
 
 class TermoEntregaApp:
     def __init__(self, root, output_dir="termos_salvos"):
@@ -145,7 +145,21 @@ class TermoEntregaApp:
         action_frame.grid(row=2, column=0, columnspan=2, pady=10)
         ttk.Button(action_frame, text="Preencher Termo", command=self.preencher_termo).pack(side=tk.LEFT, padx=5)
         ttk.Button(action_frame, text="Limpar", command=self.limpar_campos).pack(side=tk.LEFT, padx=5)
+        ttk.Button(action_frame, text="Termos Criados", command=self.open_folder).pack(side=tk.LEFT, padx=5)
         ttk.Button(action_frame, text="Sair", command=self.root.quit).pack(side=tk.LEFT, padx=5)
+
+    def open_folder(self):
+        """Abre a pasta de destino no explorador de arquivos"""
+        path = os.path.abspath(self.output_dir)
+        try:
+            if sys.platform.startswith('darwin'):
+                subprocess.call(['open', path])
+            elif sys.platform.startswith('linux'):
+                subprocess.call(['xdg-open', path])
+            else:
+                os.startfile(path)
+        except Exception as e:
+            messagebox.showerror("Erro", f"Não foi possível abrir a pasta:\n{e}")
 
     def adicionar_equipamento(self):
         descricao = self.descricao_var.get()
