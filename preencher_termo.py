@@ -27,7 +27,7 @@ class TermoEntregaApp:
         self.responsavel_setor_var = tk.StringVar()
         self.descricao_var = tk.StringVar()
         self.quantidade_var = tk.IntVar(value=1)
-        self.unidade_var = tk.StringVar()
+        self.unidade_var = tk.StringVar(value = "UND")
         self.estoque_var = tk.StringVar(value="SEDE")
         self.observacao_var = tk.StringVar()
         
