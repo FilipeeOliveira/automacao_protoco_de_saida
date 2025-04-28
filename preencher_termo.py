@@ -23,7 +23,7 @@ class TermoEntregaApp:
         self.cargo_var = tk.StringVar()
         self.responsavel_setor_var = tk.StringVar()
         self.descricao_var = tk.StringVar()
-        self.quantidade_var = tk.StringVar()
+        self.quantidade_var = tk.IntVar(value=1)
         self.unidade_var = tk.StringVar()
         self.estoque_var = tk.StringVar(value="SEDE")
         self.observacao_var = tk.StringVar()
@@ -69,75 +69,72 @@ class TermoEntregaApp:
         header_frame = ttk.LabelFrame(main_frame, text="Informações do Termo", padding=10)
         header_frame.grid(row=0, column=0, sticky="nsew", padx=5, pady=5)
         header_frame.columnconfigure(1, weight=1)
-        
-        # Campos do termo
-        labels = ["Nº de Controle:", "Local de Saída:", "Local de Destino:", "Motivo:"]
-        vars = [self.controle_var, self.local_saida_var, self.local_destino_var, self.motivo_var]
-        for i, (lbl, var) in enumerate(zip(labels, vars)):
-            ttk.Label(header_frame, text=lbl).grid(row=i, column=0, sticky="e", pady=2)
-            ttk.Entry(header_frame, textvariable=var).grid(row=i, column=1, sticky="ew", pady=2)
-        
-        # DatePickers
+
+        # Nº Controle
+        ttk.Label(header_frame, text="Nº de Controle:").grid(row=0, column=0, sticky="e", pady=2)
+        ttk.Entry(header_frame, textvariable=self.controle_var).grid(row=0, column=1, sticky="ew", pady=2)
+        # Local de Saída
+        ttk.Label(header_frame, text="Local de Saída:").grid(row=1, column=0, sticky="e", pady=2)
+        ttk.Entry(header_frame, textvariable=self.local_saida_var).grid(row=1, column=1, sticky="ew", pady=2)
+        # Local de Destino como Combobox
+        ttk.Label(header_frame, text="Local de Destino:").grid(row=2, column=0, sticky="e", pady=2)
+        destino_combo = ttk.Combobox(header_frame, textvariable=self.local_destino_var)
+        destino_combo['values'] = ["Macapa", "DNIT", "HOME - OFFICE"]
+        destino_combo.state(['!readonly'])
+        destino_combo.grid(row=2, column=1, sticky="ew", pady=2)
+        # Motivo
+        ttk.Label(header_frame, text="Motivo:").grid(row=3, column=0, sticky="e", pady=2)
+        ttk.Entry(header_frame, textvariable=self.motivo_var).grid(row=3, column=1, sticky="ew", pady=2)
+        # Datas
         ttk.Label(header_frame, text="Data de Saída:").grid(row=4, column=0, sticky="e", pady=2)
-        DateEntry(header_frame, textvariable=self.data_saida_var, date_pattern='dd-MM-yyyy').grid(row=4, column=1, sticky="w", pady=2)
+        DateEntry(header_frame, textvariable=self.data_saida_var, date_pattern='yyyy-MM-dd').grid(row=4, column=1, sticky="w", pady=2)
         ttk.Label(header_frame, text="Data de Retorno:").grid(row=5, column=0, sticky="e", pady=2)
-        DateEntry(header_frame, textvariable=self.data_retorno_var, date_pattern='dd-MM-yyyy').grid(row=5, column=1, sticky="w", pady=2)
-        
-        # Responsável com Combobox para Setor
+        DateEntry(header_frame, textvariable=self.data_retorno_var, date_pattern='yyyy-MM-dd').grid(row=5, column=1, sticky="w", pady=2)
+
+        # Responsável com Combobox para Setor e Cargo
         responsavel_frame = ttk.LabelFrame(main_frame, text="Responsável", padding=10)
         responsavel_frame.grid(row=0, column=1, sticky="nsew", padx=5, pady=5)
         responsavel_frame.columnconfigure(1, weight=1)
-        
-        # Campos do responsável
         labels_r = ["Nome:", "CPF:", "Setor:", "Cargo:", "Responsável do Setor:"]
-        vars_r = [self.nome_var, self.cpf_var, self.setor_var, self.cargo_var, self.responsavel_setor_var]
         for i, lbl in enumerate(labels_r):
             ttk.Label(responsavel_frame, text=lbl).grid(row=i, column=0, sticky="e", pady=2)
-        # Entries e Combobox
         ttk.Entry(responsavel_frame, textvariable=self.nome_var).grid(row=0, column=1, sticky="ew", pady=2)
         ttk.Entry(responsavel_frame, textvariable=self.cpf_var).grid(row=1, column=1, sticky="ew", pady=2)
-        
         setor_combo = ttk.Combobox(responsavel_frame, textvariable=self.setor_var)
         setor_combo['values'] = [
             "Engenharia", "Financeiro", "Pagamentos",
             "Compras", "Jurídico", "RH", "Marketing"
         ]
-        setor_combo.state(['!readonly'])  # permite digitar ou selecionar
+        setor_combo.state(['!readonly'])
         setor_combo.grid(row=2, column=1, sticky="ew", pady=2)
-
         cargo_combo = ttk.Combobox(responsavel_frame, textvariable=self.cargo_var)
-        cargo_combo['values'] = [ 
+        cargo_combo['values'] = [
             "Assistente Administrativo", "Analista de TI", "Coordenador de Projetos",
             "Diretor Financeiro", "Gerente de Compras", "Advogado", "Auxiliar de RH", "Analista de Marketing"
         ]
-        cargo_combo.state(['!readonly'])  # permite digitar ou selecionar
+        cargo_combo.state(['!readonly'])
         cargo_combo.grid(row=3, column=1, sticky="ew", pady=2)
-
         ttk.Entry(responsavel_frame, textvariable=self.responsavel_setor_var).grid(row=4, column=1, sticky="ew", pady=2)
-        
+
         # Equipamentos
         equipamento_frame = ttk.LabelFrame(main_frame, text="Detalhamento do Equipamento", padding=10)
         equipamento_frame.grid(row=1, column=0, columnspan=2, sticky="nsew", padx=5, pady=5)
         equipamento_frame.columnconfigure(1, weight=1)
-        
-        # Campos de equipamento
         eq_labels = ["Descrição:", "Quantidade:", "Unidade:", "Estoque:"]
         eq_vars = [self.descricao_var, self.quantidade_var, self.unidade_var, self.estoque_var]
         for i, (lbl, var) in enumerate(zip(eq_labels, eq_vars)):
             ttk.Label(equipamento_frame, text=lbl).grid(row=i, column=0, sticky="e", pady=2)
-            ttk.Entry(equipamento_frame, textvariable=var, width=50 if lbl=="Descrição:" else None).grid(row=i, column=1, sticky="ew", pady=2)
-        
-        # Botões de adicionar/remover
+            if lbl == "Quantidade:":
+                # Spinbox numérico para quantidade
+                ttk.Spinbox(equipamento_frame, from_=1, to=9999, textvariable=self.quantidade_var).grid(row=i, column=1, sticky="w", pady=2)
+            else:
+                ttk.Entry(equipamento_frame, textvariable=var, width=50 if lbl=="Descrição:" else None).grid(row=i, column=1, sticky="ew", pady=2)
         btn_frame = ttk.Frame(equipamento_frame)
         btn_frame.grid(row=4, column=0, columnspan=2, pady=5)
         ttk.Button(btn_frame, text="Adicionar Equipamento", command=self.adicionar_equipamento).pack(side=tk.LEFT, padx=5)
         ttk.Button(btn_frame, text="Remover Selecionado", command=self.remover_equipamento).pack(side=tk.LEFT, padx=5)
-        
-        # Lista de equipamentos
         self.lista_equipamentos = tk.Listbox(equipamento_frame, height=4)
         self.lista_equipamentos.grid(row=5, column=0, columnspan=2, sticky="ew", pady=5)
-        
-        # Observação
         ttk.Label(equipamento_frame, text="Observação:").grid(row=6, column=0, sticky="e", pady=2)
         ttk.Entry(equipamento_frame, textvariable=self.observacao_var, width=50).grid(row=6, column=1, sticky="ew", pady=2)
         
