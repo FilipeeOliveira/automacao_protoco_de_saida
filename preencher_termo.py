@@ -6,9 +6,12 @@ from datetime import datetime
 import os
 
 class TermoEntregaApp:
-    def __init__(self, root):
+    def __init__(self, root, output_dir="termos_salvos"):
         self.root = root
         self.root.title("Preenchimento de Termo de Entrega")
+        # Diretório onde os arquivos serão salvos
+        self.output_dir = output_dir
+        os.makedirs(self.output_dir, exist_ok=True)
         
         # Variáveis para armazenar os dados
         self.controle_var = tk.StringVar(value=self.get_next_control())
@@ -125,7 +128,6 @@ class TermoEntregaApp:
         for i, (lbl, var) in enumerate(zip(eq_labels, eq_vars)):
             ttk.Label(equipamento_frame, text=lbl).grid(row=i, column=0, sticky="e", pady=2)
             if lbl == "Quantidade:":
-                # Spinbox numérico para quantidade
                 ttk.Spinbox(equipamento_frame, from_=1, to=9999, textvariable=self.quantidade_var).grid(row=i, column=1, sticky="w", pady=2)
             else:
                 ttk.Entry(equipamento_frame, textvariable=var, width=50 if lbl=="Descrição:" else None).grid(row=i, column=1, sticky="ew", pady=2)
@@ -144,48 +146,76 @@ class TermoEntregaApp:
         ttk.Button(action_frame, text="Preencher Termo", command=self.preencher_termo).pack(side=tk.LEFT, padx=5)
         ttk.Button(action_frame, text="Limpar", command=self.limpar_campos).pack(side=tk.LEFT, padx=5)
         ttk.Button(action_frame, text="Sair", command=self.root.quit).pack(side=tk.LEFT, padx=5)
-        
+
     def adicionar_equipamento(self):
-        """Adiciona um equipamento à lista"""
         descricao = self.descricao_var.get()
         quantidade = self.quantidade_var.get()
         unidade = self.unidade_var.get()
         estoque = self.estoque_var.get()
-        
         if not descricao:
             messagebox.showwarning("Aviso", "Digite uma descrição para o equipamento!")
             return
-        
-        equipamento = {
-            "descricao": descricao,
-            "quantidade": quantidade,
-            "unidade": unidade,
-            "estoque": estoque
-        }
-        
+        equipamento = {"descricao": descricao, "quantidade": quantidade, "unidade": unidade, "estoque": estoque}
         self.equipamentos.append(equipamento)
         self.lista_equipamentos.insert(tk.END, f"{quantidade} {unidade} - {descricao} ({estoque})")
-        
-        # Limpa os campos para um novo equipamento
         self.descricao_var.set("")
-        self.quantidade_var.set("1")
+        self.quantidade_var.set(1)
         self.unidade_var.set("UND")
         self.estoque_var.set("SEDE")
-        
+
     def remover_equipamento(self):
-        """Remove o equipamento selecionado da lista"""
         selecionado = self.lista_equipamentos.curselection()
         if selecionado:
             self.equipamentos.pop(selecionado[0])
             self.lista_equipamentos.delete(selecionado[0])
-        
+
+    def preencher_termo(self):
+        if not self.equipamentos:
+            messagebox.showwarning("Aviso", "Adicione pelo menos um equipamento!")
+            return
+        try:
+            template_path = "TERMO_DE_ENTREGA_DE_EQUIPAMENTO_151.xlsx"
+            wb = load_workbook(template_path)
+            ws = wb["ORDEM DE RETIRADA DE ESTOQUE"]
+            ws['G2'] = self.controle_var.get()
+            ws['C3'] = self.local_saida_var.get()
+            ws['C4'] = self.local_destino_var.get()
+            ws['F4'] = self.data_saida_var.get()
+            ws['C5'] = self.motivo_var.get()
+            ws['F5'] = self.data_retorno_var.get()
+            ws['B7'] = self.nome_var.get()
+            ws['E7'] = self.cpf_var.get()
+            ws['B8'] = self.setor_var.get()
+            ws['E8'] = self.cargo_var.get()
+            ws['B9'] = self.responsavel_setor_var.get()
+            ws['A23'] = self.observacao_var.get()
+            linha = 12
+            for eq in self.equipamentos:
+                ws[f'A{linha}'] = eq['descricao']
+                ws[f'E{linha}'] = eq['quantidade']
+                ws[f'F{linha}'] = eq['unidade']
+                ws[f'G{linha}'] = eq['estoque']
+                linha += 1
+            data_atual = datetime.now().strftime("%d-%m-%Y")
+            for cell in ['A32','C32','D32','F32']:
+                ws[cell] = f"DATA: {data_atual}"
+            full_path = os.path.join(self.output_dir, f"Termo_de_Saída{self.nome_var.get()}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.xlsx")
+            wb.save(full_path)
+            messagebox.showinfo("Sucesso", f"Termo salvo em:\n{full_path}")
+            self.save_last_control(self.controle_var.get())
+            self.limpar_campos()
+        except Exception as e:
+            messagebox.showerror("Erro", f"Ocorreu um erro ao preencher o termo:\n{e}")
+
     def limpar_campos(self):
-        """Limpa todos os campos"""
-        self.controle_var.set("")
+        self.controle_var.set(self.get_next_control())
         self.nome_var.set("")
         self.cpf_var.set("")
+        self.setor_var.set("")
+        self.cargo_var.set("")
+        self.responsavel_setor_var.set("")
         self.descricao_var.set("")
-        self.quantidade_var.set("1")
+        self.quantidade_var.set(1)
         self.unidade_var.set("UND")
         self.estoque_var.set("SEDE")
         self.observacao_var.set("")
@@ -193,57 +223,6 @@ class TermoEntregaApp:
         self.data_retorno_var.set("")
         self.equipamentos = []
         self.lista_equipamentos.delete(0, tk.END)
-        
-    def preencher_termo(self):
-        """Preenche o termo no Excel com todos os equipamentos"""
-        if not self.equipamentos:
-            messagebox.showwarning("Aviso", "Adicione pelo menos um equipamento!")
-            return
-            
-        try:
-            # Carrega o template do Excel
-            template_path = "TERMO_DE_ENTREGA_DE_EQUIPAMENTO_151.xlsx"
-            wb = load_workbook(template_path)
-            ws = wb["ORDEM DE RETIRADA DE ESTOQUE"]
-            
-            # Preenche os dados gerais
-            ws['G2'] = self.controle_var.get()
-            ws['C3'] = f"{self.local_saida_var.get()}"
-            ws['C4'] = f"{self.local_destino_var.get()}"
-            ws['F4'] = self.data_saida_var.get()
-            ws['C5'] = f"{self.motivo_var.get()}"
-            ws['F5'] = self.data_retorno_var.get()
-            ws['B7'] = f"{self.nome_var.get()}"
-            ws['E7'] = f"{self.cpf_var.get()}"
-            ws['B8'] = f"{self.setor_var.get()}"
-            ws['E8'] = f"{self.cargo_var.get()}"
-            ws['B9'] = f"{self.responsavel_setor_var.get()}"
-            ws['A23'] = f"{self.observacao_var.get()}"
-            
-            # Preenche os equipamentos (a partir da linha 12)
-            linha = 12
-            for equipamento in self.equipamentos:
-                ws[f'A{linha}'] = equipamento["descricao"]
-                ws[f'E{linha}'] = equipamento["quantidade"]
-                ws[f'F{linha}'] = equipamento["unidade"]
-                ws[f'G{linha}'] = equipamento["estoque"]
-                linha += 1
-            
-            # Data atual para as assinaturas
-            data_atual = datetime.now().strftime("%Y-%m-%d")
-            ws['A32'] = f"DATA: {data_atual}"
-            ws['C32'] = f"DATA: {data_atual}"
-            ws['D32'] = f"DATA: {data_atual}"
-            ws['F32'] = f"DATA: {data_atual}"
-            
-            # Salva o arquivo com um novo nome
-            nome_arquivo = f"Termo_{self.nome_var.get()}_{datetime.now().strftime('%d%m%Y_%H%M%S')}.xlsx"
-            wb.save(nome_arquivo)
-            
-            messagebox.showinfo("Sucesso", f"Termo preenchido e salvo como:\n{nome_arquivo}")
-            
-        except Exception as e:
-            messagebox.showerror("Erro", f"Ocorreu um erro ao preencher o termo:\n{str(e)}")
 
 if __name__ == "__main__":
     root = tk.Tk()
