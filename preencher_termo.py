@@ -96,6 +96,7 @@ class TermoEntregaApp:
         # Entries e Combobox
         ttk.Entry(responsavel_frame, textvariable=self.nome_var).grid(row=0, column=1, sticky="ew", pady=2)
         ttk.Entry(responsavel_frame, textvariable=self.cpf_var).grid(row=1, column=1, sticky="ew", pady=2)
+        
         setor_combo = ttk.Combobox(responsavel_frame, textvariable=self.setor_var)
         setor_combo['values'] = [
             "Engenharia", "Financeiro", "Pagamentos",
@@ -103,7 +104,15 @@ class TermoEntregaApp:
         ]
         setor_combo.state(['!readonly'])  # permite digitar ou selecionar
         setor_combo.grid(row=2, column=1, sticky="ew", pady=2)
-        ttk.Entry(responsavel_frame, textvariable=self.cargo_var).grid(row=3, column=1, sticky="ew", pady=2)
+
+        cargo_combo = ttk.Combobox(responsavel_frame, textvariable=self.cargo_var)
+        cargo_combo['values'] = [ 
+            "Assistente Administrativo", "Analista de TI", "Coordenador de Projetos",
+            "Diretor Financeiro", "Gerente de Compras", "Advogado", "Auxiliar de RH", "Analista de Marketing"
+        ]
+        cargo_combo.state(['!readonly'])  # permite digitar ou selecionar
+        cargo_combo.grid(row=3, column=1, sticky="ew", pady=2)
+
         ttk.Entry(responsavel_frame, textvariable=self.responsavel_setor_var).grid(row=4, column=1, sticky="ew", pady=2)
         
         # Equipamentos
