@@ -27,7 +27,6 @@ class TermoEntregaApp:
         self.estoque_var = tk.StringVar(value="SEDE")
         self.observacao_var = tk.StringVar()
         
-        
         # Lista para armazenar múltiplos equipamentos
         self.equipamentos = []
         
@@ -55,11 +54,13 @@ class TermoEntregaApp:
         ttk.Label(header_frame, text="Motivo:").grid(row=3, column=0, sticky="e")
         ttk.Entry(header_frame, textvariable=self.motivo_var).grid(row=3, column=1)
         
+        # Substituído Entry por DateEntry para Data de Saída
         ttk.Label(header_frame, text="Data de Saída:").grid(row=4, column=0, sticky="e")
-        ttk.Entry(header_frame, textvariable=self.data_saida_var).grid(row=4, column=1)
+        DateEntry(header_frame, textvariable=self.data_saida_var, date_pattern='yyyy-MM-dd').grid(row=4, column=1)
         
+        # Substituído Entry por DateEntry para Data de Retorno
         ttk.Label(header_frame, text="Data de Retorno:").grid(row=5, column=0, sticky="e")
-        ttk.Entry(header_frame, textvariable=self.data_retorno_var).grid(row=5, column=1)
+        DateEntry(header_frame, textvariable=self.data_retorno_var, date_pattern='yyyy-MM-dd').grid(row=5, column=1)
         
         # Seção do Responsável
         responsavel_frame = ttk.LabelFrame(main_frame, text="Responsável", padding="10")
