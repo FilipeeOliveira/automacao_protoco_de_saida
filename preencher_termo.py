@@ -213,7 +213,7 @@ class TermoEntregaApp:
             data_atual = datetime.now().strftime("%d-%m-%Y")
             for cell in ['A32','C32','D32','F32']:
                 ws[cell] = f"DATA: {data_atual}"
-            full_path = os.path.join(self.output_dir, f"Termo_de_Saída{self.nome_var.get()}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.xlsx")
+            full_path = os.path.join(self.output_dir, f"Termo_de_Saída_{self.nome_var.get()}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.xlsx")
             wb.save(full_path)
             messagebox.showinfo("Sucesso", f"Termo salvo em:\n{full_path}")
             self.save_last_control(self.controle_var.get())
