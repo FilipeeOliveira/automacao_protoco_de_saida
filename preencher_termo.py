@@ -35,7 +35,6 @@ class TermoEntregaApp:
         self.create_widgets()
 
     def load_last_control(self):
-        """Lê o último número de controle de arquivo ou retorna None"""
         path = 'last_control.txt'
         if os.path.exists(path):
             with open(path, 'r') as f:
@@ -43,12 +42,10 @@ class TermoEntregaApp:
         return None
 
     def save_last_control(self, control):
-        """Salva o último número de controle em arquivo"""
         with open('last_control.txt', 'w') as f:
             f.write(control)
 
     def get_next_control(self):
-        """Gera o próximo número de controle no formato NNNN/YYYY"""
         last = self.load_last_control()
         year = datetime.now().year
         if last and '/' in last:
@@ -58,22 +55,17 @@ class TermoEntregaApp:
                 y = int(y_str)
             except ValueError:
                 num, y = 0, year
-            if y == year:
-                next_num = num + 1
-            else:
-                next_num = 1
+            next_num = num + 1 if y == year else 1
         else:
             next_num = 1
         return f"{next_num:04d}/{year}"
 
     def create_widgets(self):
-        # Frame principal com duas colunas
         main_frame = ttk.Frame(self.root, padding=10)
         main_frame.pack(fill=tk.BOTH, expand=True)
-        main_frame.columnconfigure(0, weight=1)
-        main_frame.columnconfigure(1, weight=1)
+        main_frame.columnconfigure((0,1), weight=1)
         
-        # Seção de cabeçalho (coluna 0)
+        # Informações do Termo
         header_frame = ttk.LabelFrame(main_frame, text="Informações do Termo", padding=10)
         header_frame.grid(row=0, column=0, sticky="nsew", padx=5, pady=5)
         header_frame.columnconfigure(1, weight=1)
@@ -87,11 +79,11 @@ class TermoEntregaApp:
         
         # DatePickers
         ttk.Label(header_frame, text="Data de Saída:").grid(row=4, column=0, sticky="e", pady=2)
-        DateEntry(header_frame, textvariable=self.data_saida_var, date_pattern='yyyy-MM-dd').grid(row=4, column=1, sticky="w", pady=2)
+        DateEntry(header_frame, textvariable=self.data_saida_var, date_pattern='dd-MM-yyyy').grid(row=4, column=1, sticky="w", pady=2)
         ttk.Label(header_frame, text="Data de Retorno:").grid(row=5, column=0, sticky="e", pady=2)
-        DateEntry(header_frame, textvariable=self.data_retorno_var, date_pattern='yyyy-MM-dd').grid(row=5, column=1, sticky="w", pady=2)
+        DateEntry(header_frame, textvariable=self.data_retorno_var, date_pattern='dd-MM-yyyy').grid(row=5, column=1, sticky="w", pady=2)
         
-        # Seção do Responsável (coluna 1)
+        # Responsável com Combobox para Setor
         responsavel_frame = ttk.LabelFrame(main_frame, text="Responsável", padding=10)
         responsavel_frame.grid(row=0, column=1, sticky="nsew", padx=5, pady=5)
         responsavel_frame.columnconfigure(1, weight=1)
@@ -99,11 +91,22 @@ class TermoEntregaApp:
         # Campos do responsável
         labels_r = ["Nome:", "CPF:", "Setor:", "Cargo:", "Responsável do Setor:"]
         vars_r = [self.nome_var, self.cpf_var, self.setor_var, self.cargo_var, self.responsavel_setor_var]
-        for i, (lbl, var) in enumerate(zip(labels_r, vars_r)):
+        for i, lbl in enumerate(labels_r):
             ttk.Label(responsavel_frame, text=lbl).grid(row=i, column=0, sticky="e", pady=2)
-            ttk.Entry(responsavel_frame, textvariable=var).grid(row=i, column=1, sticky="ew", pady=2)
+        # Entries e Combobox
+        ttk.Entry(responsavel_frame, textvariable=self.nome_var).grid(row=0, column=1, sticky="ew", pady=2)
+        ttk.Entry(responsavel_frame, textvariable=self.cpf_var).grid(row=1, column=1, sticky="ew", pady=2)
+        setor_combo = ttk.Combobox(responsavel_frame, textvariable=self.setor_var)
+        setor_combo['values'] = [
+            "Engenharia", "Financeiro", "Pagamentos",
+            "Compras", "Jurídico", "RH", "Marketing"
+        ]
+        setor_combo.state(['!readonly'])  # permite digitar ou selecionar
+        setor_combo.grid(row=2, column=1, sticky="ew", pady=2)
+        ttk.Entry(responsavel_frame, textvariable=self.cargo_var).grid(row=3, column=1, sticky="ew", pady=2)
+        ttk.Entry(responsavel_frame, textvariable=self.responsavel_setor_var).grid(row=4, column=1, sticky="ew", pady=2)
         
-        # Seção de Equipamento (abaixo, ocupa duas colunas)
+        # Equipamentos
         equipamento_frame = ttk.LabelFrame(main_frame, text="Detalhamento do Equipamento", padding=10)
         equipamento_frame.grid(row=1, column=0, columnspan=2, sticky="nsew", padx=5, pady=5)
         equipamento_frame.columnconfigure(1, weight=1)
@@ -129,7 +132,7 @@ class TermoEntregaApp:
         ttk.Label(equipamento_frame, text="Observação:").grid(row=6, column=0, sticky="e", pady=2)
         ttk.Entry(equipamento_frame, textvariable=self.observacao_var, width=50).grid(row=6, column=1, sticky="ew", pady=2)
         
-        # Botões principais
+        # Ações
         action_frame = ttk.Frame(main_frame)
         action_frame.grid(row=2, column=0, columnspan=2, pady=10)
         ttk.Button(action_frame, text="Preencher Termo", command=self.preencher_termo).pack(side=tk.LEFT, padx=5)
@@ -221,7 +224,7 @@ class TermoEntregaApp:
                 linha += 1
             
             # Data atual para as assinaturas
-            data_atual = datetime.now().strftime("%Y-%m-%d")
+            data_atual = datetime.now().strftime("%d-%m-%Y")
             ws['A32'] = f"DATA: {data_atual}"
             ws['C32'] = f"DATA: {data_atual}"
             ws['D32'] = f"DATA: {data_atual}"
