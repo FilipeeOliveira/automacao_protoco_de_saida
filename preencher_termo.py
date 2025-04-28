@@ -188,7 +188,7 @@ class TermoEntregaApp:
             messagebox.showwarning("Aviso", "Adicione pelo menos um equipamento!")
             return
         try:
-            template_path = "TERMO_DE_ENTREGA_DE_EQUIPAMENTO_151.xlsx"
+            template_path = "TERMO_DE_ENTREGA_DE_EQUIPAMENTO.xlsx"
             wb = load_workbook(template_path)
             ws = wb["ORDEM DE RETIRADA DE ESTOQUE"]
             ws['G2'] = self.controle_var.get()
