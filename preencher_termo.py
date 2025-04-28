@@ -3,6 +3,7 @@ from tkinter import ttk, messagebox
 from tkcalendar import DateEntry  
 from openpyxl import load_workbook
 from datetime import datetime
+import os
 
 class TermoEntregaApp:
     def __init__(self, root):
@@ -10,7 +11,7 @@ class TermoEntregaApp:
         self.root.title("Preenchimento de Termo de Entrega")
         
         # Variáveis para armazenar os dados
-        self.controle_var = tk.StringVar()
+        self.controle_var = tk.StringVar(value=self.get_next_control())
         self.local_saida_var = tk.StringVar(value="ANTONELLY SEDE - ESTOQUE T.I")
         self.local_destino_var = tk.StringVar()
         self.motivo_var = tk.StringVar()
@@ -32,7 +33,39 @@ class TermoEntregaApp:
         
         # Criar a interface
         self.create_widgets()
-        
+
+    def load_last_control(self):
+        """Lê o último número de controle de arquivo ou retorna None"""
+        path = 'last_control.txt'
+        if os.path.exists(path):
+            with open(path, 'r') as f:
+                return f.read().strip()
+        return None
+
+    def save_last_control(self, control):
+        """Salva o último número de controle em arquivo"""
+        with open('last_control.txt', 'w') as f:
+            f.write(control)
+
+    def get_next_control(self):
+        """Gera o próximo número de controle no formato NNNN/YYYY"""
+        last = self.load_last_control()
+        year = datetime.now().year
+        if last and '/' in last:
+            num_str, y_str = last.split('/')
+            try:
+                num = int(num_str)
+                y = int(y_str)
+            except ValueError:
+                num, y = 0, year
+            if y == year:
+                next_num = num + 1
+            else:
+                next_num = 1
+        else:
+            next_num = 1
+        return f"{next_num:04d}/{year}"
+
     def create_widgets(self):
         # Frame principal com duas colunas
         main_frame = ttk.Frame(self.root, padding=10)
