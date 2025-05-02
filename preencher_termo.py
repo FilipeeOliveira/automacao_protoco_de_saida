@@ -82,7 +82,7 @@ class TermoEntregaApp:
         # Local de Destino como Combobox
         ttk.Label(header_frame, text="Local de Destino:").grid(row=2, column=0, sticky="e", pady=2)
         destino_combo = ttk.Combobox(header_frame, textvariable=self.local_destino_var)
-        destino_combo['values'] = ["Macapa", "DNIT", "HOME - OFFICE"]
+        destino_combo['values'] = ["MACAPÁ", "DNIT", "HOME - OFFICE", "OBRA", "VIAGEM", "OUTROS"]
         destino_combo.state(['!readonly'])
         destino_combo.grid(row=2, column=1, sticky="ew", pady=2)
         # Motivo
@@ -105,15 +105,18 @@ class TermoEntregaApp:
         ttk.Entry(responsavel_frame, textvariable=self.cpf_var).grid(row=1, column=1, sticky="ew", pady=2)
         setor_combo = ttk.Combobox(responsavel_frame, textvariable=self.setor_var)
         setor_combo['values'] = [
-            "Engenharia", "Financeiro", "Pagamentos",
-            "Compras", "Jurídico", "RH", "Marketing"
+            "ENGENHARIA", "FINANCEIRO", "PAGAMENTOS",
+            "COMPRAS", "JURÍDICO", "RH", "MARKETING",
+            "LOGÍSTICA", "PATRIMÔNIO", "IP4", "OUTROS",
+            "SESMET", "DIRETORIA", "PROCESSOS", "QUALIDADE",
+            "TI", "DNIT" "OUTROS"
         ]
         setor_combo.state(['!readonly'])
         setor_combo.grid(row=2, column=1, sticky="ew", pady=2)
         cargo_combo = ttk.Combobox(responsavel_frame, textvariable=self.cargo_var)
         cargo_combo['values'] = [
-            "Assistente Administrativo", "Analista de TI", "Coordenador de Projetos",
-            "Diretor Financeiro", "Gerente de Compras", "Advogado", "Auxiliar de RH", "Analista de Marketing"
+            "ASSISTENTE ADMINISTRATIVO", "AUXILIAR ADMINISTRATIVO", "AUXILIAR DE ENGENHARIA","ANALISTA DE TI", "COORDENADOR DE PROJETOS",
+            "DIRETOR FINANCEIRO", "GERENTE DE COMPRAS", "ADVOGADO", "AUXILIAR DE RH", "ANALISTA DE MARKETING",
         ]
         cargo_combo.state(['!readonly'])
         cargo_combo.grid(row=3, column=1, sticky="ew", pady=2)
