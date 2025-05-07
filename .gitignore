@@ -11,7 +11,7 @@ last_control.txt
 termos_salvos/
 
 # Excel de modelo (opcional, mantenha se quiser versionar)
-# TERMO_DE_ENTREGA_DE_EQUIPAMENTO.xlsx
+TERMO_DE_ENTREGA_DE_EQUIPAMENTO.xlsx
 
 # Arquivos temporários e do sistema
 __pycache__/
