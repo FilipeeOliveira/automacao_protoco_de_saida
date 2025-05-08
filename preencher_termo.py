@@ -150,6 +150,10 @@ class TermoEntregaApp:
         ttk.Button(action_frame, text="Limpar", command=self.limpar_campos).pack(side=tk.LEFT, padx=5)
         ttk.Button(action_frame, text="Termos Criados", command=self.open_folder).pack(side=tk.LEFT, padx=5)
         ttk.Button(action_frame, text="Sair", command=self.root.quit).pack(side=tk.LEFT, padx=5)
+        
+        # Assinatura e Versão
+        assinatura_label = ttk.Label(main_frame, text="Criado por Filipe Oliveira - v1.0", font=("Arial", 8), foreground="gray")
+        assinatura_label.grid(row=3, column=1, sticky="e", padx=5, pady=(0,5))
 
     def open_folder(self):
         """Abre a pasta de destino no explorador de arquivos"""
