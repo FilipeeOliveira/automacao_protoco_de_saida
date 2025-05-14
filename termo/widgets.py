@@ -34,19 +34,18 @@ def get_widget(ctx: dict):
     ttk.Entry(header, textvariable=vars['motivo']).grid(row=3, column=1, sticky="ew")
     ttk.Label(header, text="Data de Saída:").grid(row=4, column=0, sticky="e")
     DateEntry(header, textvariable=vars['data_saida'], date_pattern='dd-MM-yyyy').grid(row=4, column=1, sticky="w")
-    ttk.Label(header, text="Data de Retorno:").grid(row=5, column=0, sticky="e")
-    date_ret = DateEntry(header, textvariable=vars['data_retorno'], date_pattern='dd-MM-yyyy')
-    date_ret.grid(row=5, column=1, sticky="w")
-      # Checkbutton para Sim/Não
+    frame_retorno = ttk.Frame(header)
+    frame_retorno.grid(row=5, column=0, sticky="e", padx=(0, 5))
+    ttk.Label(frame_retorno, text="Possui Retorno?").pack(side=tk.LEFT)
     chk = ttk.Checkbutton(
-        header,
-        text="Possui Retorno?",
+        frame_retorno,
         variable=vars['tem_retorno'],
         command=cb['toggle_return']
     )
-    chk.grid(row=5, column=0, padx=(10,0))
+    chk.pack(side=tk.LEFT, padx=(4, 0))
+    date_ret = DateEntry(header, textvariable=vars['data_retorno'], date_pattern='dd-MM-yyyy')
+    date_ret.grid(row=5, column=1, sticky="w")
     
-    # Expõe o widget de data no controller para habilitar/desabilitar
     ctx_obj = ctx.get('equip_listbox')
     if ctx_obj:
         ctx_obj.data_retorno_widget = date_ret
