@@ -16,6 +16,7 @@ class TermoEntregaApp:
             'motivo'             : tk.StringVar(),
             'data_saida'         : tk.StringVar(),
             'data_retorno'       : tk.StringVar(),
+            'tem_retorno'        : tk.BooleanVar(value=True),
             'nome'               : tk.StringVar(),
             'cpf'                : tk.StringVar(),
             'setor'              : tk.StringVar(),
@@ -36,7 +37,8 @@ class TermoEntregaApp:
             'fill'   : self.preencher_termo,
             'clear'  : self.limpar_campos,
             'open'   : self.open_folder,
-            'exit'   : self.root.quit
+            'exit'   : self.root.quit,
+            'toggle_return': self.on_toggle_return
         }
 
         # Constrói UI
@@ -46,6 +48,16 @@ class TermoEntregaApp:
             'callbacks': self.callbacks,
             'equip_listbox': self
         })
+        
+    def on_toggle_return(self):
+        """ Habilita/desabilita (e limpa) o campo de data_retorno na UI """
+        entry = getattr(self, 'data_retorno_widget', None)
+        if not self.vars['tem_retorno'].get():
+            # desliga e limpa
+            self.vars['data_retorno'].set("")
+            entry.config(state='disabled')
+        else:
+            entry.config(state='normal')
 
     def adicionar_equipamento(self):
         desc = self.vars['descricao'].get().strip()
@@ -76,6 +88,8 @@ class TermoEntregaApp:
         self.lista_equipamentos.delete(idx)
 
     def preencher_termo(self):
+        if not self.vars['tem_retorno'].get():
+            self.vars['data_retorno'].set("")
         if not self.equipamentos:
             messagebox.showwarning("Aviso","Adicione ao menos um equipamento")
             return
