@@ -105,11 +105,14 @@ class TermoEntregaApp:
         for k, v in self.vars.items():
             if isinstance(v, tk.IntVar):
                 v.set(1)
+            elif isinstance(v, tk.BooleanVar):
+                v.set(True) 
             else:
                 v.set("")
         self.vars['controle'].set(get_next_control())
         self.equipamentos.clear()
         self.lista_equipamentos.delete(0, tk.END)
+        self.on_toggle_return()
 
     def open_folder(self):
         import os, sys, subprocess
