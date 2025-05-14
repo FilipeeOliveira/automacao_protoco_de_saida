@@ -106,5 +106,5 @@ def get_widget(ctx: dict):
     ttk.Button(act, text="Sair",      command=cb['exit']).pack(side=tk.LEFT, padx=5)
 
     # Assinatura
-    ttk.Label(main, text="Criado por Filipe Oliveira - v1.0",
+    ttk.Label(main, text="Criado por Filipe Oliveira - v1.1",
               font=("Arial",8), foreground="gray").grid(row=3, column=1, sticky="e")

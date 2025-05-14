@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import messagebox
-from termo.widgets import get_widget
-from termo.generate import get_next_control, fill_term
+from src.widgets import get_widget
+from src.generate import get_next_control, fill_term
 
 class TermoEntregaApp:
     def __init__(self, root, output_dir="termos_salvos"):
