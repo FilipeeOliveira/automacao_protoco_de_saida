@@ -2,8 +2,8 @@ import os
 from datetime import datetime
 from openpyxl import load_workbook
 
-LAST_CONTROL_FILE = "last_control.txt"
-TEMPLATE_PATH = "TERMO_DE_ENTREGA_DE_EQUIPAMENTO.xlsx"
+LAST_CONTROL_FILE = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "cache_control", "last_control.txt")
+TEMPLATE_PATH = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "template_base", "TERMO_DE_ENTREGA_DE_EQUIPAMENTO.xlsx")
 
 def load_last_control():
     if os.path.exists(LAST_CONTROL_FILE):
