@@ -106,7 +106,7 @@ class Widgets:
         ttk.Button(act, text="Preencher", command=self.instancia.preencher_termo).pack(side=tk.LEFT, padx=5)
         ttk.Button(act, text="Limpar",    command=self.instancia.limpar_campos).pack(side=tk.LEFT, padx=5)
         ttk.Button(act, text="Abrir Pasta", command=self.instancia.open_folder).pack(side=tk.LEFT, padx=5)
-        # ttk.Button(act, text="Sair",      command=self.root.quit).pack(side=tk.LEFT, padx=5)
+        ttk.Button(act, text="Sair",  command=self.instancia.root.quit).pack(side=tk.LEFT, padx=5)
 
         # Assinatura
         ttk.Label(main, text="Criado por Filipe Oliveira - v1.0",

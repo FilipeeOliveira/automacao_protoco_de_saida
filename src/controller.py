@@ -35,7 +35,6 @@ class TermoEntregaApp:
         
         Widgets(self).execute()
         
-        
     def on_toggle_return(self):
         OnToggleReturn(self).execute()
         
