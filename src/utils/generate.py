@@ -1,9 +1,48 @@
 import os
+import sys
 from datetime import datetime
 from openpyxl import load_workbook
 
-LAST_CONTROL_FILE = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "cache_control", "last_control.txt")
-TEMPLATE_PATH = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "template_base", "TERMO_DE_ENTREGA_DE_EQUIPAMENTO.xlsx")
+def get_paths():
+    """Define os caminhos corretos para ambos os ambientes"""
+    if getattr(sys, 'frozen', False):
+        # Modo executável
+        base_dir = os.path.dirname(sys.executable)
+        return {
+            'cache_dir': os.path.join(base_dir, "cache_control"),
+            'template_dir': os.path.join(base_dir, "template_base")
+        }
+    else:
+        # Modo desenvolvimento
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        
+        # Verifica se já estamos em src/ ou subpastas
+        if os.path.basename(os.path.dirname(script_dir)) == 'src':
+            base_dir = os.path.dirname(script_dir)
+        else:
+            base_dir = script_dir
+            
+        return {
+            'cache_dir': os.path.join(base_dir, "cache_control"),
+            'template_dir': os.path.join(base_dir, "template_base")
+        }
+
+# Obtém os caminhos
+paths = get_paths()
+LAST_CONTROL_FILE = os.path.join(paths['cache_dir'], "last_control.txt")
+TEMPLATE_PATH = os.path.join(paths['template_dir'], "TERMO_DE_ENTREGA_DE_EQUIPAMENTO.xlsx")
+
+# Cria diretórios se não existirem
+os.makedirs(paths['cache_dir'], exist_ok=True)
+os.makedirs(paths['template_dir'], exist_ok=True)
+
+# Verifica se o template existe
+if not os.path.exists(TEMPLATE_PATH):
+    available = "\n  • " + "\n  • ".join(os.listdir(paths['template_dir'])) if os.path.exists(paths['template_dir']) else "Diretório não existe"
+    raise FileNotFoundError(
+        f"Template não encontrado em: {TEMPLATE_PATH}\n"
+        f"Arquivos disponíveis no diretório:{available}"
+    )
 
 def load_last_control():
     if os.path.exists(LAST_CONTROL_FILE):
